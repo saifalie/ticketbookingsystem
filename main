@@ -1,0 +1,185 @@
+
+# CONNECT DATABASE
+
+import mysql.connector as a
+passwd=str(input("DATABASE PASSWORD: "))
+con= a.connect(host="localhost", user="root", passwd = passwd)
+
+# SELECT OR CREATE DATABASE
+
+
+c = con.cursor()
+c.execute("show databases")
+dl = c.fetchall()
+dl2 = []
+
+for i in dl:
+    dl2.append(i[0])
+if 'shows' in dl2:
+    sql = "use shows"
+    c.execute(sql)
+
+else:
+    sql1 = "create database shows"
+    c.execute(sql1)
+    sql2 = "use shows"
+    c.execute(sql2)
+    sql3 = """create table MyShow ( MovieName varchar(40), Charge integer, ShowTime varchar(50),
+            Date varchar(20))"""
+    c.execute(sql3)
+    sql4 = """create table Viewers(Name varchar(40), Ticket integer, Payment integer, ShowDate varchar(20), Phone varchar(20))"""
+    c.execute(sql4)
+    sql5 = """create table Snacks (Name varchar(40), Cost integer)"""
+    c.execute(sql5)
+    sql6 = """create table Worker (Name varchar(100), Work varchar(40), Salary varchar(20))"""
+    c.execute(sql6)
+    con.commit()
+
+
+# SYSTEM PASSWORD LOGIN
+
+
+
+def signin():
+    print("\n")
+    print("---------*>>>>>>>>> Welcome, Leisure Limited [ INOX ] <<<<<<<<<-")
+    print("\n")
+    p = input("System Password: ")
+    if p == "saif":
+        options()
+    else:
+        signin()
+
+# DISPLAY OPTIONS
+
+
+def options():
+    print("""
+            1.    Add Shows
+            2.    Add Snacks 
+            3.    Book Ticket
+            4.    Add Worker
+            5.    Display Shows
+            6.    Display Booking
+            7.    Display Worker
+      """)
+
+
+    
+    choice = input("Select Option : ")
+    while True:
+        if (choice == '1'):
+            AddShows()
+        elif (choice=='2'):
+            AddSnacks()
+        elif (choice=='3'):
+            Booking()
+        elif (choice=='4'):
+            AddWorker()
+        elif (choice=='5'):
+            dShows()
+        elif (choice=='6'):
+            dBooking()
+        elif (choice=='7'):
+            dWorker()
+        else:
+            print("Enter Again......")
+            options()
+
+def AddShows():
+    mn = input("Movie Name : ")
+    c = input("Charge : ")
+    st = input("Show Time : ")
+    d = input("Date : ")
+    data = (mn,c,st,d)
+    sql = 'insert into MyShow values(%s,%s,%s,%s)'
+    c = con.cursor() 
+    c.execute(sql,data)
+    con.commit()
+    print("Data Inserted Successfully")
+    options()
+
+def AddSnacks():
+    n = input("Name : ")
+    c = input("Cost : ")
+    data = (n,c)
+    sql = 'insert into Snacks values(%s,%s)'
+    c = con.cursor()
+    c.execute(sql,data)
+    con.commit
+    print("Data Inserted Successfully")
+    options()
+
+def Booking():
+    vn = input("Viewer Name: ")
+    t = int(input("Ticket : "))    #total tickets
+    c = int(input("Cost Per Ticket : "))
+    d = input("Date & Time: ")
+    p = input("Phone : ")
+    data = (vn,t,t*c,d,p)
+    sql = 'insert into Viewers values(%s,%s,%s,%s,%s)'
+    c = con.cursor()
+    c.execute(sql,data)
+    con.commit() 
+    print("Data Inserted Successfully")
+    options()
+
+def AddWorker():
+    n = input("Name: ")
+    w = input("Work :")
+    s = input("Salary : ")
+    data = (n,w,s)
+    sql = 'insert into Worker values(%s,%s, %s)'
+    c = con.cursor()
+    c.execute(sql,data)
+    con.commit
+    print("Data Inserted Successfully")
+    options()
+    
+
+
+
+
+
+
+
+def dShows():
+    sd = input("Show Date : ")
+    sql = 'select * from MyShow'
+    c = con.cursor()
+    c.execute(sql) 
+    d = c.fetchall()
+    for i in d:
+        if i[3] == sd:
+            print(i)
+    options()
+                                 
+
+def dBooking():
+    sd = input("Show Date: ")
+    sql = 'select * from Viewers'
+    c = con.cursor()
+    c.execute(sql)
+    d = c.fetchall()
+    for i in d:
+        if i[3] == sd:
+             print(i)
+    options()
+
+
+
+def dWorker():
+    sql = 'select * from Worker'
+    c = con.cursor()
+    c.execute(sql)
+    d = c.fetchall()
+    for i in d:
+        print(i)
+    options()
+
+
+signin()
+
+
+
+
